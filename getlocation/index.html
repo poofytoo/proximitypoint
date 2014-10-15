@@ -6,11 +6,13 @@
   <link rel="stylesheet" type="text/css" href="css/reset.css" media="screen" />
   <link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
   <script src="js/scripts.js"></script>
   <script>
   $(document).ready(function() {
     var INTERVAL = 1000;
     var mode = 'GROUND';
+    var ref = new Firebase('https://poofytoo.firebaseio.com/proximitypoint');
 
     var getLocation = function() {
         if (navigator.geolocation) {
@@ -39,7 +41,8 @@
         var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + alat + '|' + along;
 
         console.log('starting get req...');
-
+        ref.child('phone' + id).set({lon:along, lat:alat});
+/*
         $.ajax({
         type: 'GET',
         dataType: 'jsonp',
@@ -52,6 +55,7 @@
             console.log(msg);
         }
     });
+        */
       }
     }
 

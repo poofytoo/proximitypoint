@@ -1,6 +1,8 @@
+# python firebase serverless implementation
+
 #!/usr/bin/python
 
-import serial, urllib2, time, GPS
+import serial, urllib2, time, GPS, json
 
 
 #try: Xbee = serial.Serial(port='/dev/ttyUSB0',baudrate=9600,timeout=1000)
@@ -9,14 +11,19 @@ import serial, urllib2, time, GPS
 Xbee = None
 i = 0
 
-# while not Xbee:
-#     try: Xbee = serial.Serial(port='/dev/ttyUSB{}'.format(i),baudrate=9600, timeout=1000)
-#     except: i += 1
-Xbee = serial.Serial(port='/dev/tty.usbserial-FTG97NL6',baudrate=9600,timeout=1000)
+while not Xbee:
+    try: Xbee = serial.Serial(port='/dev/ttyUSB{}'.format(i),baudrate=9600, timeout=1000)
+    except: i += 1
+# Xbee = serial.Serial(port='/dev/tty.usbserial-FTG97NL6',baudrate=9600,timeout=1000)
 
 
 def readCoords(phone_id, split_char):
-    return urllib2.urlopen('http://smallerpackage4me.ru/proximitywatch/GPSdata_{}'.format(phone_id)).read().split(split_char)
+    r = urllib2.urlopen('https://poofytoo.firebaseio.com/proximitypoint/phone{}.json'.format(phone_id)).read()
+    # print '-----------'
+    # print (json.loads(r)['lat'], json.loads(r)['lon'])
+    return (json.loads(r)['lat'], json.loads(r)['lon'])
+    # return (t_lat1, t_lon1)
+    #return urllib2.urlopen('http://smallerpackage4me.ru/proximitywatch/GPSdata_{}'.format(phone_id)).read().split(split_char)
 
 def XbeeWrite(lat1,lon1,lat2,lon2):
     theta = GPS.getDir(lat1,lon1,lat2,lon2)
