@@ -16,7 +16,6 @@
     var xcoord, ycoord;
 
     var getLocation = function() {
-        console.log('getting location!');
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
         } else {
@@ -30,6 +29,7 @@
 
         id = $("input[type='radio']:checked").val();
 
+        if (id != undefined) {
         var html = ''
         html += 'lat: ' + xcoord + '<br />';
         html += 'long: ' + ycoord + '<br />';
@@ -40,9 +40,10 @@
         
         var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + xcoord + '|' + ycoord;
         
-        $.get(url, function(data) {
+          $.get(url, function(data) {
             console.log(data);
-          })
+          });
+        }
     }
 
     $('.interval').text(INTERVAL);

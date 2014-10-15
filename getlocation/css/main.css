@@ -26,12 +26,13 @@ input[type=radio] {
 input[type=radio] + label::before {
     content: '';
     display: inline-block;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
     border-radius: 50%;
     margin: 0 0.5em;
 }
 input[type=radio]:checked + label::before {
     background-color: #e91e63;
+    border-color: #e91e63;
 }
 
 label {
