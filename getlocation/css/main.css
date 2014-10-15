@@ -1,0 +1,44 @@
+
+body {
+  font-family: sans-serif;
+  font-weight: 100;
+}
+
+h1 {
+  text-align: center;
+  background-color: #e91e63;
+  color: #F4A2C1;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+em {
+  font-weight: 300;
+  color: #fff;
+}
+
+input[type=radio] {
+    display: none;
+    margin-bottom: 30px;
+}
+
+input[type=radio] + label::before {
+    content: '';
+    display: inline-block;
+    border: 1px solid #000;
+    border-radius: 50%;
+    margin: 0 0.5em;
+}
+input[type=radio]:checked + label::before {
+    background-color: #e91e63;
+}
+
+label {
+  font-size: 24px;
+}
+
+label::before {
+    width: 30px;
+    height: 30px;
+}
