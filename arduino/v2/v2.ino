@@ -24,7 +24,7 @@ static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 
 float angle = 0.0;
 float distance = 0.0;
-int altitude = 0;
+int altitude = 30;
 int velocity = 2;
 
 // XBee's DOUT (TX) is connected to pin 2 (Arduino's Software RX)
@@ -34,12 +34,12 @@ SoftwareSerial XBee(2, 3); // RX, TX
 // The setup() method runs once, when the sketch starts
 void setup()   {                
   Serial.begin(9600);
-  Serial.println(freeRam());
+  // Serial.println(freeRam());
   XBee.begin(9600);
   
   // turn on backlight
-  pinMode(BACKLIGHT_LED, OUTPUT);
-  digitalWrite(BACKLIGHT_LED, HIGH);
+  // pinMode(BACKLIGHT_LED, OUTPUT);
+  // digitalWrite(BACKLIGHT_LED, HIGH);
 
   // initialize and set the contrast to 0x18
   glcd.begin(0x01);
@@ -68,6 +68,7 @@ void setup()   {
 void loop()                     
 {
   
+  
    if (XBee.available())
     { // If data comes in from XBee, send it out to serial monitor
       //angle = XBee.parseFloat();
@@ -76,15 +77,17 @@ void loop()
       Serial.write(XBee.read());
     }
 
+    /*
     altitude += velocity;
     if (altitude > 128 || altitude < 0) {
       velocity = -velocity;
+      altitude += velocity*3;
     }
-    angle += 0.2;
+    // angle += 0.2;
     glcd.clear();
     drawBackground();
     drawMarker(altitude, 30, angle);
-    delay(200);
+    */
 }
 
 // this handy function will return the number of bytes currently free in RAM, great for debugging!   
