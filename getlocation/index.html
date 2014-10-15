@@ -36,7 +36,7 @@
         $('.coords').html(html);
 
       
-        var url = 'dump?phone_id=' + id + '&coords=' + alat + '|' + along;
+        var url = '/dump?phone_id=' + id + '&coords=' + alat + '|' + along;
 
         console.log('starting get req...');
         $.get(url, function(data) {
