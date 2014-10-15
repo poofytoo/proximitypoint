@@ -11,10 +11,10 @@ import serial, urllib2, time, GPS, json
 Xbee = None
 i = 0
 
-while not Xbee:
-    try: Xbee = serial.Serial(port='/dev/ttyUSB{}'.format(i),baudrate=9600, timeout=1000)
-    except: i += 1
-# Xbee = serial.Serial(port='/dev/tty.usbserial-FTG97NL6',baudrate=9600,timeout=1000)
+#while not Xbee:
+#    try: Xbee = serial.Serial(port='/dev/ttyUSB{}'.format(i),baudrate=9600, timeout=1000)
+#    except: i += 1
+Xbee = serial.Serial(port='/dev/tty.usbserial-FTG97NL6',baudrate=9600,timeout=1000)
 
 
 def readCoords(phone_id, split_char):
@@ -28,8 +28,8 @@ def readCoords(phone_id, split_char):
 def XbeeWrite(lat1,lon1,lat2,lon2):
     theta = GPS.getDir(lat1,lon1,lat2,lon2)
     dist = GPS.haversine(lat1,lon1,lat2,lon2)
-    print "theta={} dist={}".format(theta,dist),
-    Xbee.write('{},{}\n'.format(str(theta)[:5],str(dist)[:5]))
+    print "theta={} dist={}".format(-theta,dist),
+    Xbee.write('{},{}\n'.format(str(-theta)[:5],str(dist)[:5]))
 
 t_lat1, t_lon1 = readCoords(1,'|')
 t_lat2, t_lon2 = readCoords(2,'|')

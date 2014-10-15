@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple markers</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+
+    <script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+
+    <script>
+
+    var ref = new Firebase('https://poofytoo.firebaseio.com/proximitypoint');
+
+function initialize() {
+
+  var myLatlng = new google.maps.LatLng(42.3623965,-71.0907872);
+  var myLatlng2 = new google.maps.LatLng(42.3613951,-71.0901028);
+  var mapOptions = {
+    zoom: 18,
+    center: myLatlng
+  }
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: 'PHONE 1',
+      draggable: true
+  });
+
+  var marker2 = new google.maps.Marker({
+      position: myLatlng2,
+      map: map,
+      title: 'PHONE 2',
+      draggable: true
+  });
+
+
+
+
+
+  ref.child('phone2').on('value', function(snapshot) {
+    data = snapshot.val();
+    // var p1 = new google.maps.LatLng(data.phone1.lat,data.phone1.lon);
+    // var p2 = new google.maps.LatLng(data.phone2.lat,data.phone2.lon);
+/*
+    marker.setMap(null);
+    marker2.setMap(null);
+
+    marker = new google.maps.Marker({
+      position: p1,
+    draggable:true,
+      map: map,
+    });
+
+    marker2 = new google.maps.Marker({
+      position: p2,
+    draggable:true,
+      map: map,
+    });
+*/
+
+ 
+
+  google.maps.event.addListener(marker,'dragend',function(event) {
+    // console.log('asdf' + event);
+    // console.log('hey');
+  });
+
+
+  })
+
+  google.maps.event.addListener(marker,'drag', function(event) {
+    m1lon = event.latLng.B;
+    m1lat = event.latLng.k;
+  ref.child('phone1').set({lat: m1lat, lon:m1lon});
+
+  });
+
+  google.maps.event.addListener(marker2,'drag', function(event) {
+    m2lon = event.latLng.B;
+    m2lat = event.latLng.k;
+  ref.child('phone2').set({lat: m2lat, lon:m2lon});
+
+  });
+
+
+
+
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
