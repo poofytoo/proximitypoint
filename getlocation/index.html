@@ -6,11 +6,13 @@
   <link rel="stylesheet" type="text/css" href="css/reset.css" media="screen" />
   <link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
   <script src="js/scripts.js"></script>
   <script>
   $(document).ready(function() {
     var INTERVAL = 1000;
-    var xcoord, ycoord;
+    var mode = 'GROUND';
+    var ref = new Firebase('https://poofytoo.firebaseio.com/proximitypoint');
 
     var getLocation = function() {
         if (navigator.geolocation) {
@@ -21,30 +23,59 @@
     }
 
     function showPosition(position) {
-        xcoord = position.coords.latitude;
-        ycoord = position.coords.longitude; 
+        updatePosition(position.coords.latitude, position.coords.longitude)
+    }
 
-        id = $("input[type='radio']:checked").val();
+    var updatePosition = function(alat, along) {
+      id = $("input[type='radio']:checked").val();
 
         if (id != undefined) {
         var html = ''
-        html += 'lat: ' + xcoord + '<br />';
-        html += 'long: ' + ycoord + '<br />';
+        html += 'lat: ' + alat + '<br />';
+        html += 'long: ' + along + '<br />';
         html += 'You are phone: ' + id + '<br />';
         html += '----<br />';
         $('.coords').html(html);
 
-        
-        var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + xcoord + '|' + ycoord;
-        
-          $.get(url, function(data) {
-            console.log(data);
-          });
+      
+        var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + alat + '|' + along;
+
+        console.log('starting get req...');
+        ref.child('phone' + id).set({lon:along, lat:alat});
+/*
+        $.ajax({
+        type: 'GET',
+        dataType: 'jsonp',
+        data: {},
+        url: url,
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR)
+        },
+        success: function (msg) {
+            console.log(msg);
         }
+    });
+        */
+      }
     }
 
     $('.interval').text(INTERVAL);
-    window.setInterval(getLocation, INTERVAL)
+    window.setInterval(function() {
+      if (mode == 'GROUND') {
+        getLocation();
+      } else if (mode == 'FLY') {
+        updatePosition($('#flylat').val(), $('#flylong').val())
+      }
+    }, INTERVAL)
+
+    $('#fly').on('click', function() {
+      mode = 'FLY';
+    });
+
+    $('#ground').on('click', function() {
+      mode = 'GROUND';
+    });
+
   })
 
   </script>
@@ -54,6 +85,10 @@
   <h1><em>ProximityBand</em> v0.1</h1>
   <input id="r1" type="radio" name="phone-id" value="1"><label for="r1">Phone 1</label>
   <input id="r2" type="radio" name="phone-id" value="2"><label for="r2">Phone 2</label><br /><br />
+
+  <input type="text" id="flylat" placeholder="manual lat">
+  <input type="text" id="flylong" placeholder="manual long">
+  <button id="fly">Let's Fly!</button><button id="ground">Put me back</button>
 
   Getting new location every <span class="interval"></span>ms...<br />
   <div class="coords"></div>
