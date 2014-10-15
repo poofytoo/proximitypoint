@@ -1,5 +1,6 @@
 #include "ST7565.h"
 #include <math.h>
+#include <SoftwareSerial.h>
 
 int ledPin =  13;    // LED connected to digital pin 13
 
@@ -22,13 +23,19 @@ static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 0x20, 0x3c, 0x3f, 0x3f, 0x1f, 0x19, 0x1f, 0x7b, 0xfb, 0xfe, 0xfe, 0x07, 0x07, 0x07, 0x03, 0x00, };
 
 float angle = 0.0;
+float distance = 0.0;
 int altitude = 0;
 int velocity = 2;
+
+// XBee's DOUT (TX) is connected to pin 2 (Arduino's Software RX)
+// XBee's DIN (RX) is connected to pin 3 (Arduino's Software TX)
+SoftwareSerial XBee(2, 3); // RX, TX
 
 // The setup() method runs once, when the sketch starts
 void setup()   {                
   Serial.begin(9600);
-  Serial.print(freeRam());
+  Serial.println(freeRam());
+  XBee.begin(9600);
   
   // turn on backlight
   pinMode(BACKLIGHT_LED, OUTPUT);
@@ -60,6 +67,15 @@ void setup()   {
 
 void loop()                     
 {
+  
+   if (XBee.available())
+    { // If data comes in from XBee, send it out to serial monitor
+      //angle = XBee.parseFloat();
+      //distance = XBee.parseFloat();
+      //Serial.write(angle);
+      Serial.write(XBee.read());
+    }
+
     altitude += velocity;
     if (altitude > 128 || altitude < 0) {
       velocity = -velocity;
@@ -117,5 +133,4 @@ void drawMarker(uint8_t altitude, uint8_t offsetX, float angle) {
   //glcd.drawline(altitude,32,29,35, BLACK);
   glcd.display();
 }
-
 
