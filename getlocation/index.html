@@ -36,7 +36,7 @@
 
         
         var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + xcoord + '|' + ycoord;
-        
+          console.log('starting get req...')
           $.get(url, function(data) {
             console.log(data);
           });
