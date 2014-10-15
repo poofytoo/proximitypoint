@@ -36,12 +36,22 @@
         $('.coords').html(html);
 
       
-        var url = '/dump?phone_id=' + id + '&coords=' + alat + '|' + along;
+        var url = 'http://smallerpackage4me.ru:5000/dump?phone_id=' + id + '&coords=' + alat + '|' + along;
 
         console.log('starting get req...');
-        $.get(url, function(data) {
-          console.log(data);
-        });
+
+        $.ajax({
+        type: 'GET',
+        dataType: 'jsonp',
+        data: {},
+        url: url,
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR)
+        },
+        success: function (msg) {
+            console.log(msg);
+        }
+    });
       }
     }
 
