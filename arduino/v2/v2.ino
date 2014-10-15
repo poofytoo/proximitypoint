@@ -25,7 +25,12 @@ static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 float angle = 0.0;
 float distance = 0.0;
 int altitude = 30;
-int velocity = 2;
+int velocity = 0;
+
+
+int count = 0;
+
+boolean stringComplete = false;  // whether the string is complete
 
 // XBee's DOUT (TX) is connected to pin 2 (Arduino's Software RX)
 // XBee's DIN (RX) is connected to pin 3 (Arduino's Software TX)
@@ -34,7 +39,7 @@ SoftwareSerial XBee(2, 3); // RX, TX
 // The setup() method runs once, when the sketch starts
 void setup()   {                
   Serial.begin(9600);
-  // Serial.println(freeRam());
+  Serial.println(freeRam());
   XBee.begin(9600);
   
   // turn on backlight
@@ -67,27 +72,57 @@ void setup()   {
 
 void loop()                     
 {
-  
-  
    if (XBee.available())
     { // If data comes in from XBee, send it out to serial monitor
-      //angle = XBee.parseFloat();
-      //distance = XBee.parseFloat();
-      //Serial.write(angle);
-      Serial.write(XBee.read());
+    // get the new byte:
+    String inputString1 = "";         // a string to hold incoming data
+    char inChar = (char)XBee.read(); 
+    // add it to the inputString:
+    inputString1 += inChar;
+    while (inChar != ',')
+    {
+      inChar = (char)XBee.read(); 
+      // add it to the inputString:
+      inputString1 += inChar;
+    }
+    char floatbuf1[32]; 
+    inputString1.toCharArray(floatbuf1, 32*sizeof(char));
+    angle = atof(floatbuf1);
+    
+    
+    
+    String inputString2 = "";         // a string to hold incoming data
+    // get the new byte:
+    inChar = (char)XBee.read(); 
+    // add it to the inputString:
+    inputString2 += inChar;
+    while (inChar != '\n')
+    {
+      inChar = (char)XBee.read(); 
+      // add it to the inputString:
+      inputString2 += inChar;
     }
 
-    /*
-    altitude += velocity;
-    if (altitude > 128 || altitude < 0) {
-      velocity = -velocity;
-      altitude += velocity*3;
+    char floatbuf2[32]; 
+    inputString2.toCharArray(floatbuf2, 32*sizeof(char));
+    distance = atof(floatbuf2);
+
+      Serial.print("angle:");
+      Serial.println(angle);
+      Serial.print("dist:");
+      Serial.println(distance);
+//      Serial.write(XBee.read());
     }
-    // angle += 0.2;
-    glcd.clear();
-    drawBackground();
-    drawMarker(altitude, 30, angle);
-    */
+
+      altitude += velocity;
+      if (altitude > 128 || altitude < 0) {
+        velocity = -velocity;
+        altitude += velocity*3;
+      }
+      // angle += 0.2;
+      glcd.clear();
+      drawBackground();
+      drawMarker(altitude, 30, angle);
 }
 
 // this handy function will return the number of bytes currently free in RAM, great for debugging!   
@@ -134,6 +169,11 @@ void drawMarker(uint8_t altitude, uint8_t offsetX, float angle) {
   glcd.drawline(topy, topx, lefty, leftx, BLACK);
   glcd.drawline(topy, topx, righty, rightx, BLACK);
   //glcd.drawline(altitude,32,29,35, BLACK);
+  
+  char outstr[15];
+  dtostrf(distance,7, 3, outstr);
+  glcd.drawstring(altitude, 5, outstr);
+  
   glcd.display();
 }
 
