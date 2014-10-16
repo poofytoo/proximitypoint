@@ -24,7 +24,7 @@ static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 
 float angle = 0.0;
 float distance = 0.0;
-int altitude = 30;
+int altitude = 60;
 int velocity = 0;
 
 
@@ -89,8 +89,6 @@ void loop()
     inputString1.toCharArray(floatbuf1, 32*sizeof(char));
     angle = atof(floatbuf1);
     
-    
-    
     String inputString2 = "";         // a string to hold incoming data
     // get the new byte:
     inChar = (char)XBee.read(); 
@@ -141,15 +139,13 @@ int freeRam(void)
 } 
 
 void drawBackground(void) {
-  for (uint8_t i=0; i < 6; i++) {
-    glcd.drawline(i*24+15, 0, i*24+15, 64, BLACK);
+  for (uint8_t i=0; i < 4; i++) {
+    glcd.drawline(0, i*18+5, 128, i*18+5, BLACK);
     String num = String(i*10);
   }
-  glcd.drawstring(0, 0, "-20");
-  glcd.drawstring(30, 0, "-10");
-  glcd.drawstring(62, 0, "0");
-  glcd.drawstring(85, 0, "10");
-  glcd.drawstring(110, 0, "20");
+  glcd.drawstring(0, 0, "-20m");
+  glcd.drawstring(0, 4, "0");
+  glcd.drawstring(0, 7, "20m");
 }
 
 void drawMarker(uint8_t altitude, uint8_t offsetX, float angle) {
@@ -172,7 +168,7 @@ void drawMarker(uint8_t altitude, uint8_t offsetX, float angle) {
   
   char outstr[15];
   dtostrf(distance,7, 3, outstr);
-  glcd.drawstring(altitude, 5, outstr);
+  glcd.drawstring(altitude+10, 4, outstr);
   
   glcd.display();
 }
