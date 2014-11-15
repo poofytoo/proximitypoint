@@ -112,8 +112,9 @@ serialPort.on("open", function () {
       var lonm = Math.floor(W/100);
       latm += N%100/60;
       lonm += W%100/60;
-      console.log(id, buff);
-      if (latm && lonm) {
+      console.log(id, d[0].substr(-3), buff);
+
+      if (latm && lonm && d[0].substr(-3) == 'RMC') {
         console.log(latm, lonm);
         fdata = {};
         fdata[id] = {lat:latm, lon:lonm};
